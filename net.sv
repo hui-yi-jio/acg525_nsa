@@ -33,15 +33,15 @@ module net(
 			default	:	return 0;
 		endcase 
 	endfunction
-	reg [7:0]txreg0;
+	reg [7:0]txreg0, txreg1;
 
-	wire [7:0]txreg1 = sel(txcnt1);
-	always @(posedge clk125) begin 
+	always_ff @(posedge clk125) begin 
 		txcnt1 <= txcnt1 + 1;	//0
-		//txcnt0 <= txcnt1;	//1
-		txctl <= txcnt1 < 226;	//1
-		txreg0 <= txreg1;	//1
-		crc <= crcnext(crc, txcnt1, txreg1);	//1
+		txcnt0 <= txcnt1;	//1
+		txctl <= txcnt0 < 226;	//2
+		txreg1 <= sel(txcnt1);	//1
+		txreg0 <= txreg1;	//2
+		crc <= crcnext(crc, txcnt0, txreg1);	//2
 	end
-	assign txd = clk125 ? txreg0[3:0] : txreg0[7:4];
+	assign txd = clk125 ? txreg0[3:0] : txreg0[7:4]; //2
 endmodule
