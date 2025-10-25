@@ -36,7 +36,7 @@ module main(
 	   .stclk(stclk)
 	   );
 
-	net net(
+	tx tx(
 	.clk125(clk125),
 	.txctl(txctl),
 	.txd(txd)

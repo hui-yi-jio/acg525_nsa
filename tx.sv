@@ -15,7 +15,7 @@ function [31:0]crcnext([31:0]crc, [7:0]cnt, [7:0]data);
 endfunction
 
 localparam [13:0][7:0]head = 'h1919_08bf_b8da_8800_0088_dab8_bf08;
-module net(
+module tx(
 	input clk125,
 	output reg txctl,
 
