@@ -28,8 +28,10 @@ module main(
 	
    seg seg(
 	   .clk(clkmin),
+	   .clk1000(clk1000),
 	   .key0(key0),
 	   .key1(key1),
+	   .digsig(digsig),
 	   .ds(ds),
 	   .stclk(stclk)
 	   );

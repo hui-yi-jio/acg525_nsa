@@ -5,7 +5,7 @@
 //Part Number: GW5A-LV25UG324ES
 //Device: GW5A-25
 //Device Version: A
-//Created Time: Sat 10 25 23:56:37 2025
+//Created Time: Sun 10 26 01:15:58 2025
 
 IO_LOC "txctl" C2;
 IO_PORT "txctl" PULL_MODE=NONE DRIVE=8 BANK_VCCIO=3.3;
@@ -41,7 +41,7 @@ IO_LOC "rxd[0]" G3;
 IO_PORT "rxd[0]" PULL_MODE=NONE BANK_VCCIO=3.3;
 IO_LOC "key1" A15;
 IO_PORT "key1" PULL_MODE=NONE BANK_VCCIO=3.3;
-IO_LOC "digsig" T11;
+IO_LOC "digsig" C15;
 IO_PORT "digsig" PULL_MODE=NONE BANK_VCCIO=3.3;
 IO_LOC "key0" B16;
 IO_PORT "key0" PULL_MODE=NONE BANK_VCCIO=3.3;
