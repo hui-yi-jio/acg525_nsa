@@ -16,8 +16,10 @@ endfunction
 
 localparam [13:0][7:0]head = 'h1919_08bf_b8da_8800_0088_dab8_bf08;
 module tx(
-	input clk125,
+	input clk125, full,
+	input [39:0]idata,
 	output reg txctl,
+	output wire rden,
 
 	output wire[3:0]txd
 );
