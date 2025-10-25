@@ -5,7 +5,7 @@
 //Part Number: GW5A-LV25UG324ES
 //Device: GW5A-25
 //Device Version: A
-//Created Time: Sat Oct 25 23:28:07 2025
+//Created Time: Sun Oct 26 01:57:28 2025
 
 module Gowin_PLL (clkout0, clkout1, clkout2, clkout3, clkin);
 
@@ -60,7 +60,7 @@ defparam PLLA_inst.IDIV_SEL = 2;
 defparam PLLA_inst.FBDIV_SEL = 20;
 defparam PLLA_inst.ODIV0_SEL = 8;
 defparam PLLA_inst.ODIV1_SEL = 8;
-defparam PLLA_inst.ODIV2_SEL = 1;
+defparam PLLA_inst.ODIV2_SEL = 10;
 defparam PLLA_inst.ODIV3_SEL = 128;
 defparam PLLA_inst.ODIV4_SEL = 8;
 defparam PLLA_inst.ODIV5_SEL = 8;

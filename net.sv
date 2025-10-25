@@ -40,7 +40,7 @@ module net(
 		txcnt0 <= txcnt1;	//1
 		txctl <= txcnt0 < 226;	//2
 		txreg1 <= sel(txcnt1);	//1
-		txreg0 <= txreg1;	//2
+		txreg0 <= sel(txcnt0);	//2
 		crc <= crcnext(crc, txcnt0, txreg1);	//2
 	end
 	assign txd = clk125 ? txreg0[3:0] : txreg0[7:4]; //2
