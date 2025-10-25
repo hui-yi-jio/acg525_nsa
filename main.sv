@@ -2,7 +2,7 @@ module main(
 	input clk50,
 
 	input digsig, key0, key1,
-	output segdata, stclk, shclk,
+	output ds, stclk, shclk,
 
 	input [3:0]rxd,
 	output [3:0]txd,
@@ -27,7 +27,9 @@ module main(
 	
    seg seg(
 	   .clk(clkmin),
-	   .segdata(segdata),
+	   .key0(key0),
+	   .key1(key1),
+	   .ds(ds),
 	   .shclk(shclk),
 	   .stclk(stclk)
 	   );

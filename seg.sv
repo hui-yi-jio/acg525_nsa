@@ -1,12 +1,12 @@
-localparam [15:0][7:0]segt = {
-	8'hc0,8'hf9,8'ha4,8'b0,
-	8'h99,8'h92,8'h82,8'hf8,
-	8'h80,8'h90,8'h88,8'h83,
-	8'hc6,8'ha1,8'h86,8'h8e};
+localparam [7:0]segt[0:15] = {
+	8'h03,8'h9f,8'h25,8'h0d,
+	8'h99,8'h49,8'h41,8'h1f,
+	8'h01,8'h09,8'h11,8'hc1,
+	8'h63,8'h85,8'h61,8'h71};
 
 module seg(
 	input clk, key0, key1,
-	output reg segdata, shclk, stclk
+	output reg ds, shclk, stclk
 );
 	reg [7:0]k0cnt, k1cnt;
 	always @(negedge key0) k0cnt <= k0cnt + 1;
@@ -14,14 +14,16 @@ module seg(
 
 	reg [6:0]segstat0;
 	wire [6:0]segstat1 = segstat0 + 1;
-	wire [7:0]segbit = 1 << segstat1[2:0];
-	wire [7:0]segbuf = segstat1[3] ? k0cnt : k1cnt;
+	wire [7:0]segbit = 1 << segstat1[6:4];
+	wire [7:0]segdata = segt[segstat1[6:4]];
+	wire [15:0]segbuf = {segbit, segdata};
 	reg [9:0]div;
 	always @(negedge clk) div <= div + 1;
-	always @(negedge div[9]) begin
+	always @(negedge div[9]) begin 
 		segstat0 <= segstat1;
-		segdata <= segbuf[segstat1[6:4]];
+		ds <= segbuf[segstat1[3:0]];
 	end
-	always @(posedge div[9]) stclk <= segstat0[3];
+	always @(posedge div[9]) stclk <= !segstat0[3];
 	assign shclk = div[9];
+
 endmodule
