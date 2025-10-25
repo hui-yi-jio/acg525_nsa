@@ -27,9 +27,11 @@ module main(
 	
    seg seg(
 	   .clk(clkmin),
+	   .segdata(segdata),
 	   .shclk(shclk),
 	   .stclk(stclk)
 	   );
+
 	net net(
 	.clk125(clk125),
 	.txctl(txctl),
