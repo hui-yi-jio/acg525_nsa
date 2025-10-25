@@ -6,7 +6,7 @@ localparam [7:0]segt[0:15] = {
 
 module seg(
 	input clk, key0, key1,
-	output reg ds, shclk, stclk
+	output reg ds, stclk
 );
 	reg [7:0]k0cnt, k1cnt;
 	always @(negedge key0) k0cnt <= k0cnt + 1;
@@ -15,15 +15,12 @@ module seg(
 	reg [6:0]segstat0;
 	wire [6:0]segstat1 = segstat0 + 1;
 	wire [7:0]segbit = 1 << segstat1[6:4];
-	wire [7:0]segdata = segt[segstat1[6:4]];
+	wire [7:0]segdata = segt[segstat1[6:4] + k0cnt[3:0]];
 	wire [15:0]segbuf = {segbit, segdata};
-	reg [9:0]div;
-	always @(negedge clk) div <= div + 1;
-	always @(negedge div[9]) begin 
+	always @(negedge clk) begin 
 		segstat0 <= segstat1;
 		ds <= segbuf[segstat1[3:0]];
 	end
-	always @(posedge div[9]) stclk <= !segstat0[3];
-	assign shclk = div[9];
+	always @(posedge clk) stclk <= !segstat0[3];
 
 endmodule

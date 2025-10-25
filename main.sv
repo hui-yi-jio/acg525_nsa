@@ -16,6 +16,7 @@ module main(
         wire clkmin;
 
 	assign txclk = clk125_90;
+	assign shclk = clkmin;
 
     Gowin_PLL pll(
         .clkout0(clk125), //output clkout0
@@ -30,7 +31,6 @@ module main(
 	   .key0(key0),
 	   .key1(key1),
 	   .ds(ds),
-	   .shclk(shclk),
 	   .stclk(stclk)
 	   );
 
