@@ -1,0 +1,2 @@
+%: %.sv
+	verilator -Wall --cc $<

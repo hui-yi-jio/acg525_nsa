@@ -25,6 +25,11 @@ module main(
         .clkin(clk50) //input clkin
     );
 	
+   seg seg(
+	   .clk(clkmin),
+	   .shclk(shclk),
+	   .stclk(stclk)
+	   );
 	net net(
 	.clk125(clk125),
 	.txctl(txctl),
