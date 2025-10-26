@@ -5,7 +5,7 @@
 //Part Number: GW5A-LV25UG324ES
 //Device: GW5A-25
 //Device Version: A
-//Created Time: Sun Oct 26 21:19:17 2025
+//Created Time: Sun Oct 26 23:52:58 2025
 
 //Change the instance name and port connections to the signal names
 //--------Copy here to design--------
@@ -16,6 +16,7 @@
         .clkout2(clkout2_o), //output clkout2
         .clkout3(clkout3_o), //output clkout3
         .clkout4(clkout4_o), //output clkout4
+        .clkout5(clkout5_o), //output clkout5
         .clkin(clkin_i) //input clkin
     );
 

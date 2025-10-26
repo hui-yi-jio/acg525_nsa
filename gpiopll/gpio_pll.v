@@ -5,19 +5,19 @@
 //Part Number: GW5A-LV25UG324ES
 //Device: GW5A-25
 //Device Version: A
-//Created Time: Sun Oct 26 21:19:17 2025
+//Created Time: Sun Oct 26 23:52:58 2025
 
-module gpio_pll (clkout0, clkout1, clkout2, clkout3, clkout4, clkin);
+module gpio_pll (clkout0, clkout1, clkout2, clkout3, clkout4, clkout5, clkin);
 
 output clkout0;
 output clkout1;
 output clkout2;
 output clkout3;
 output clkout4;
+output clkout5;
 input clkin;
 
 wire lock;
-wire clkout5;
 wire clkout6;
 wire clkfbout;
 wire [7:0] mdrdo;
@@ -58,12 +58,12 @@ PLLA PLLA_inst (
 defparam PLLA_inst.FCLKIN = "50";
 defparam PLLA_inst.IDIV_SEL = 2;
 defparam PLLA_inst.FBDIV_SEL = 20;
-defparam PLLA_inst.ODIV0_SEL = 32;
+defparam PLLA_inst.ODIV0_SEL = 8;
 defparam PLLA_inst.ODIV1_SEL = 8;
 defparam PLLA_inst.ODIV2_SEL = 8;
 defparam PLLA_inst.ODIV3_SEL = 8;
-defparam PLLA_inst.ODIV4_SEL = 8;
-defparam PLLA_inst.ODIV5_SEL = 8;
+defparam PLLA_inst.ODIV4_SEL = 32;
+defparam PLLA_inst.ODIV5_SEL = 50;
 defparam PLLA_inst.ODIV6_SEL = 8;
 defparam PLLA_inst.MDIV_SEL = 2;
 defparam PLLA_inst.MDIV_FRAC_SEL = 0;
@@ -73,7 +73,7 @@ defparam PLLA_inst.CLKOUT1_EN = "TRUE";
 defparam PLLA_inst.CLKOUT2_EN = "TRUE";
 defparam PLLA_inst.CLKOUT3_EN = "TRUE";
 defparam PLLA_inst.CLKOUT4_EN = "TRUE";
-defparam PLLA_inst.CLKOUT5_EN = "FALSE";
+defparam PLLA_inst.CLKOUT5_EN = "TRUE";
 defparam PLLA_inst.CLKOUT6_EN = "FALSE";
 defparam PLLA_inst.CLKFB_SEL = "INTERNAL";
 defparam PLLA_inst.CLKOUT0_DT_DIR = 1'b1;
@@ -101,13 +101,13 @@ defparam PLLA_inst.CLK6_OUT_SEL = 1'b0;
 defparam PLLA_inst.DYN_DPA_EN = "FALSE";
 defparam PLLA_inst.CLKOUT0_PE_COARSE = 0;
 defparam PLLA_inst.CLKOUT0_PE_FINE = 0;
-defparam PLLA_inst.CLKOUT1_PE_COARSE = 0;
+defparam PLLA_inst.CLKOUT1_PE_COARSE = 2;
 defparam PLLA_inst.CLKOUT1_PE_FINE = 0;
-defparam PLLA_inst.CLKOUT2_PE_COARSE = 2;
+defparam PLLA_inst.CLKOUT2_PE_COARSE = 4;
 defparam PLLA_inst.CLKOUT2_PE_FINE = 0;
-defparam PLLA_inst.CLKOUT3_PE_COARSE = 4;
+defparam PLLA_inst.CLKOUT3_PE_COARSE = 6;
 defparam PLLA_inst.CLKOUT3_PE_FINE = 0;
-defparam PLLA_inst.CLKOUT4_PE_COARSE = 6;
+defparam PLLA_inst.CLKOUT4_PE_COARSE = 0;
 defparam PLLA_inst.CLKOUT4_PE_FINE = 0;
 defparam PLLA_inst.CLKOUT5_PE_COARSE = 0;
 defparam PLLA_inst.CLKOUT5_PE_FINE = 0;

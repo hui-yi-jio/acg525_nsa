@@ -13,22 +13,27 @@ module main(
 	output [9:0]dapin,
 
 	input rxclk, rxctl,
-	output txclk, txctl
+	output txclk, txctl,
+	output pllout
 );
-	wire pclk, fclkp, fclkn, fclkqp, fclkqn;
+	wire pclk, fclkp, fclkn, fclkqp, fclkqn, po;
+	reg [7:0]div;
+	always @(posedge po) div <= div + 1;
+	assign pllout = div[7];
     gpio_pll gpiopll(
-        .clkout0(pclk), //output clkout0
-        .clkout1(fclkp), //output clkout1
-        .clkout2(fclkn), //output clkout2
-        .clkout3(fclkqp), //output clkout3
-        .clkout4(fclkqn), //output clkout4
-        .clkin(clk50) //input clkin
+        .clkout0(fclkp), 
+        .clkout1(fclkn), 
+        .clkout2(fclkqp),
+        .clkout3(fclkqn),
+        .clkout4(pclk),  
+        .clkout5(po),
+        .clkin(clk50)   
     );
 	wire [31:0]dsq;
     Gowin_Oversample oversam(
         .q(dsq), //output [31:0] q
         .fclkp(fclkp), //input fclkp
-        .d(clk50), //input d
+        .d(rxclk), //input d
         .fclkn(fclkn), //input fclkn
         .fclkqp(fclkqp), //input fclkqp
         .fclkqn(fclkqn), //input fclkqn
