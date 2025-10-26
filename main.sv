@@ -85,10 +85,10 @@ module main(
 	
 	seg seg(
 	        .clk(clkmin),
-	        .clk1000(clk1000),
+	        .pclk(pclk),
 	        .key0(key0),
 	        .key1(key1),
-	        .digsig(digsig),
+	        .dsq(dsq),
 	        .ds(ds),
 	        .stclk(stclk)
 	);
