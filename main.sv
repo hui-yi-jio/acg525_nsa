@@ -15,6 +15,26 @@ module main(
 	input rxclk, rxctl,
 	output txclk, txctl
 );
+	wire pclk, fclkp, fclkn, fclkqp, fclkqn;
+    gpio_pll gpiopll(
+        .clkout0(pclk), //output clkout0
+        .clkout1(fclkp), //output clkout1
+        .clkout2(fclkn), //output clkout2
+        .clkout3(fclkqp), //output clkout3
+        .clkout4(fclkqn), //output clkout4
+        .clkin(clk50) //input clkin
+    );
+	wire [31:0]dsq;
+    Gowin_Oversample oversam(
+        .q(dsq), //output [31:0] q
+        .fclkp(fclkp), //input fclkp
+        .d(digsig), //input d
+        .fclkn(fclkn), //input fclkn
+        .fclkqp(fclkqp), //input fclkqp
+        .fclkqn(fclkqn), //input fclkqn
+        .pclk(pclk), //input pclk
+        .reset(reset) //input reset
+    );
 	wire clk125;
 	wire clk125_90;
         wire clk1000;
