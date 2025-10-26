@@ -10,30 +10,6 @@ function automatic [5:0]cntedge(b, [31:0]x);
 		j += ^x[i+:2];
 	return j;
 endfunction
-function [4:0]ffe(b, [31:0]x);
-	if (b ^ x[0])
-		return 0;
-	for (int i = 0; i < 31; ++i)
-		if (^x[i+:2])
-			return i + 1;
-endfunction
-function automatic [4:0]cm([31:0]x);
-	bit [4:0] i, j;
-	for (i = 0; i < 31; ++i)
-		if (^x[i+:2])
-			break;
-	for (j = i + 1; j < 31; ++j)
-		if (^x[j+:2])
-			break;
-	return j - i;
-endfunction
-function automatic [4:0]ct([31:0]x);
-	bit [4:0] i;
-	for (i = 0; i < 31; ++i)
-		if (^x[30 - i+:2])
-			break;
-	return i + 1;
-endfunction
 
 module seg(
 	input clk, pclk, key0, key1, [31:0]dsq,
@@ -42,43 +18,23 @@ module seg(
 	reg preb;
 	wire b = dsq[31];
 	wire [5:0]ce = cntedge(preb, dsq);
-	reg [31:0]prec, t0, t1, freq, fcnt, cnt, duty;
 	wire [5:0]c1 = $countones(dsq);
-	wire [5:0]c0 = 32 - c1;
-	wire [31:0]be = prec + ffe(preb, dsq);
-	wire [4:0] ae = cm(dsq);
+	localparam [31:0]t = 31250000; 
+	reg [31:0]prec, t1s, t1c, freq, fcnt, cnt;
+	wire[31:0]t1 = t1s / freq, t0 = (t - t1s) / freq, duty = t1s * 100 / t;
 	always @(negedge pclk) begin
 		preb <= b;
-		if (cnt == 31250000) begin
+		if (cnt == t) begin
 			cnt <= 1;
 			freq <= fcnt >> 1;
 			fcnt <= ce;
+			t1s <= t1c;
+			t1c <= c1;
 		end else begin
 			cnt <= cnt + 1;
 			fcnt <= fcnt + ce;
+			t1c <= t1c + c1;
 		end
-		case(ce)
-			0: prec <= prec + 32;
-			1:
-				if (b) begin
-					prec <= c1;
-					t0 <= prec + c0;
-				end else begin
-					prec <= c0;
-					t1 <= prec + c1;
-				end
-			default: begin
-				prec <= ct(dsq);
-				if (preb) begin
-					t1 <= be;
-					t0 <= ae;
-				end else begin
-					t0 <= be;
-					t1 <= ae;
-				end
-			end
-
-		endcase
 	end
 
 	reg [1:0]k0cnt, k1cnt;
