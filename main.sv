@@ -2,7 +2,7 @@ module main(
 	input clk50,
 
 	input digsig, key0, key1,
-	output ds, stclk, shclk,
+	output ds, stclk, shclk, [3:0]led,
 
 	input [3:0]rxd,
 	output [3:0]txd,
@@ -17,9 +17,9 @@ module main(
 	output pllout
 );
 	wire pclk, fclkp, fclkn, fclkqp, fclkqn, po;
-	reg [7:0]div;
+	reg [15:0]div;
 	always @(posedge po) div <= div + 1;
-	assign pllout = div[7];
+	assign pllout = div > 800;
     gpio_pll gpiopll(
         .clkout0(fclkp), 
         .clkout1(fclkn), 
@@ -93,9 +93,11 @@ module main(
 	        .pclk(pclk),
 	        .key0(key0),
 	        .key1(key1),
+		.digsig(digsig),
 	        .dsq(dsq),
 	        .ds(ds),
-	        .stclk(stclk)
+	        .stclk(stclk),
+		.led(led)
 	);
 
 	rx rx(

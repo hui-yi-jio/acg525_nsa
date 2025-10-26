@@ -4,24 +4,16 @@ localparam [7:0]segt[0:15] = {
 	8'h01,8'h09,8'h11,8'hc1,
 	8'h63,8'h85,8'h61,8'h71
 };
-function automatic [5:0]cntedge(b, [31:0]x);
-	bit [5:0]j = !b & x[0];
-	for (int i = 0; i < 31; ++i)
-		j += !x[i] & x[i + 1] ;
-	return j;
-endfunction
 
 module seg(
-	input clk, pclk, key0, key1, [31:0]dsq,
-	output reg ds, stclk
+	input clk, pclk, key0, key1, digsig, [31:0]dsq,
+	output reg ds, stclk, [3:0]led
 );	
 	reg preb;
-	wire b = dsq[31];
-	wire [5:0]ce = cntedge(preb, dsq);
-	wire [5:0]c1 = $countones(dsq);
-	localparam [31:0]t = 31250000; 
-	reg [31:0]prec, duty, t1c, freq, fcnt, cnt;
-	wire[31:0]t1 = duty / freq, t0 = (t * 32 - duty) / freq;
+	wire b = digsig;
+	wire ce = !preb & b;
+	localparam [31:0]t = 100000000; 
+	reg [31:0]duty, t1c, freq, fcnt, cnt,t01,t1, cnt0;
 	always @(negedge pclk) begin
 		preb <= b;
 		if (cnt == t) begin
@@ -29,15 +21,22 @@ module seg(
 			freq <= fcnt;
 			fcnt <= ce;
 			duty <= t1c;
-			t1c <= c1;
+			t1c <= b;
 		end else begin
 			cnt <= cnt + 1;
 			fcnt <= fcnt + ce;
-			t1c <= t1c + c1;
+			t1c <= t1c + b;
 		end
+		if (ce) begin
+			cnt0 <= cnt;
+			t01 <= cnt - cnt0;
+		end
+		if (preb & !b)
+			t1 <= cnt - cnt0;
 	end
 
 	reg [1:0]k0cnt, k1cnt;
+	assign led[1:0] = k0cnt;
 	always @(negedge key0) k0cnt <= k0cnt + 1;
 	always @(negedge key1) k1cnt <= k1cnt + 1;
 
@@ -46,7 +45,7 @@ module seg(
 			0: return freq;
 			1: return duty;
 			2: return t1;
-			3: return t0;
+			3: return t01 - t1;
 		endcase
 	endfunction
 	wire [7:0][3:0]disbuf = cntbuf();
