@@ -1,0 +1,12 @@
+[General]
+ipc_version=4
+file=gowin_oversample
+module=Gowin_Oversample
+target_device=gw5a25a-006
+type=io_oversample
+version=1.0
+
+[Config]
+DelayMode=Static
+DelayStep=0
+LANG=0
