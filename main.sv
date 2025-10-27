@@ -93,7 +93,7 @@ module main(
 	        .pclk(pclk),
 	        .key0(key0),
 	        .key1(key1),
-	        .dsq(dsq),
+	        .dsq0(dsq),
 	        .ds(ds),
 	        .stclk(stclk),
 		.led(led)

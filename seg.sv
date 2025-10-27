@@ -27,18 +27,19 @@ function u32 clo(u32 x);
 endfunction
 
 module seg(
-	input clk, pclk, key0, key1, [31:0]dsq,
+	input clk, pclk, key0, key1, [31:0]dsq0,
 	output reg ds, stclk, [1:0]led
 );	
 	reg preb;
+	reg [31:0]dsq, duty, t1c, freq, fcnt, cnt,t0,t1, prec;
 	wire b = dsq[31];
 	wire [31:0]ce = cntedge(preb, dsq);
 	wire [31:0]c1 = $countones(dsq);
 	wire [31:0]cmz = ctz(dsq >> cto(dsq));
 	wire [31:0]cmo = cto(dsq >> ctz(dsq));
 	localparam u32 t = 31_250_000; 
-	reg [31:0] duty, t1c, freq, fcnt, cnt,t0,t1, prec;
 	always @(negedge pclk) begin
+		dsq <= dsq0;
 		preb <= b;
 		if (ce == 0) prec <= prec + 32;
 		else begin
