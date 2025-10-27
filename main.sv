@@ -33,7 +33,7 @@ module main(
     Gowin_Oversample oversam(
         .q(dsq), //output [31:0] q
         .fclkp(fclkp), //input fclkp
-        .d(rxclk), //input d
+        .d(clk50), //input d
         .fclkn(fclkqp), //input fclkn
         .fclkqp(fclkn), //input fclkqp
         .fclkqn(fclkqn), //input fclkqn
