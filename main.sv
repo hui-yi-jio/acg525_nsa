@@ -19,7 +19,7 @@ module main(
 	wire pclk, fclkp, fclkn, fclkqp, fclkqn, po;
 	reg [15:0]div;
 	always @(posedge po) div <= div + 1;
-	assign pllout = div > 800;
+	assign pllout = rxclk;//div > 800;
     gpio_pll gpiopll(
         .clkout0(fclkp), 
         .clkout1(fclkn), 
@@ -33,7 +33,7 @@ module main(
     Gowin_Oversample oversam(
         .q(dsq), //output [31:0] q
         .fclkp(fclkp), //input fclkp
-        .d(clk50), //input d
+        .d(rxclk), //input d
         .fclkn(fclkqp), //input fclkn
         .fclkqp(fclkn), //input fclkqp
         .fclkqn(fclkqn), //input fclkqn

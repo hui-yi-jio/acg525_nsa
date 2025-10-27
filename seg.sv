@@ -25,6 +25,9 @@ endfunction
 function u32 clo(u32 x);
 	return clz(~x);
 endfunction
+function u32 avg(u32 x0, u32 x1);
+	return (x0 * 255 + x1 + 256) >> 8;
+endfunction
 
 module seg(
 	input clk, pclk, key0, key1, [31:0]dsq0,
@@ -37,7 +40,6 @@ module seg(
 	wire [31:0]c1 = $countones(dsq);
 	wire [31:0]cmz = ctz(dsq >> cto(dsq));
 	wire [31:0]cmo = cto(dsq >> ctz(dsq));
-	localparam u32 t = 31_250_000; 
 	always @(negedge pclk) begin
 		dsq <= dsq0;
 		preb <= b;
@@ -50,11 +52,11 @@ module seg(
 				if (preb) t0 <= cmz;
 				else t1 <= cmo;
 		end
-		if (cnt == t) begin
+		if (cnt == 31250) begin
 			cnt <= 1;
-			freq <= fcnt;
+			freq <= avg(freq, fcnt);
 			fcnt <= ce;
-			duty <= t1c;
+			duty <= avg(duty, t1c);
 			t1c <= c1;
 		end else begin
 			cnt <= cnt + 1;
