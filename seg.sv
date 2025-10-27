@@ -6,13 +6,13 @@ localparam [7:0]segt[0:15] = {
 };
 
 module seg(
-	input clk, pclk, key0, key1, digsig, [31:0]dsq,
+	input clk, pclk, key0, key1, [31:0]dsq,
 	output reg ds, stclk, [3:0]led
 );	
 	reg preb;
 	wire b = digsig;
 	wire ce = !preb & b;
-	localparam [31:0]t = 100000000; 
+	localparam [31:0]t = 100_000_000; 
 	reg [31:0]duty, t1c, freq, fcnt, cnt,t01,t1, cnt0;
 	always @(negedge pclk) begin
 		preb <= b;
