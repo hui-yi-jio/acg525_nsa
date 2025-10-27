@@ -19,7 +19,7 @@ module main(
 	wire pclk, fclkp, fclkn, fclkqp, fclkqn, po;
 	reg [15:0]div;
 	always @(posedge po) div <= div + 1;
-	assign pllout = rxclk;//div > 800;
+	assign pllout = rxclk;
     gpio_pll gpiopll(
         .clkout0(fclkp), 
         .clkout1(fclkn), 
@@ -31,14 +31,14 @@ module main(
     );
 	wire [31:0]dsq;
     Gowin_Oversample oversam(
-        .q(dsq), //output [31:0] q
-        .fclkp(fclkp), //input fclkp
-        .d(rxclk), //input d
-        .fclkn(fclkqp), //input fclkn
-        .fclkqp(fclkn), //input fclkqp
-        .fclkqn(fclkqn), //input fclkqn
-        .pclk(pclk), //input pclk
-        .reset(0) //input reset
+        .q(dsq), 
+        .fclkp(fclkp), 
+        .d(rxclk), 
+        .fclkn(fclkqp), 
+        .fclkqp(fclkn), 
+        .fclkqn(fclkqn), 
+        .pclk(pclk), 
+        .reset(0) 
     );
 	wire clk125;
 	wire clk125_90;
@@ -51,21 +51,18 @@ module main(
 	assign shclk = clkmin;
 
     Gowin_PLL pll(
-        .clkout0(clk125), //output clkout0
-        .clkout1(clk125_90), //output clkout1
-        .clkout2(clk1000), //output clkout3
-        .clkout3(clkmin), //output clkout4
-        .clkin(clk50) //input clkin
+        .clkout0(clk125),
+        .clkout1(clk125_90),
+        .clkout2(clk1000),
+        .clkout3(clkmin),
+        .clkin(clk50)
     );
-	wire [39:0]addata;
-	wire adwren;
-	wire txrden;
-	wire txafull;
-	wire [39:0]txdata;
+	wire [7:0]adout, txin;
+	wire [10:0]adad, txad;
 	tx tx(
 	.clk125(clk125),
-	.full(txafull),
-	.idata(txdata),
+	.(txafull),
+	.din(txin),
 	.txctl(txctl),
 	.rden(txrden),
 	.txd(txd)
@@ -76,18 +73,36 @@ module main(
 		.odata(addata),
 		.wren(adwren)
 		);
-	fifo_top fifo(
-		.Data(addata), //input [39:0] Data
-		.WrClk(clk50), //input WrClk
-		.RdClk(clk125), //input RdClk
-		.WrEn(adwren), //input WrEn
-		.RdEn(txrden), //input RdEn
-		.Almost_Full(txafull), //output Almost_Full
-		.Q(txdata) //output [39:0] Q
-//		.Empty(Empty_o), //output Empty
-//		.Full(Full_o) //output Full
-	);
 	
+    ad2tx ad2tx(
+        .dout(txin),
+        .clka(clk50),
+        .cea(1), 
+        .clkb(clk125),
+        .ceb(1),
+        .oce(1),
+        .reset(0),
+        .ada(adad),
+        .din(adout),
+        .adb(txad)
+    );
+	rx rx(
+		.rxclk(rxclk),
+		.rxctl(rxctl),
+		.rxd(rxd)
+		);
+    rx2da rx2da(
+        .dout(dout_o),
+        .clka(clka_i), 
+        .cea(cea_i),
+        .clkb(clkb_i),
+        .ceb(ceb_i), 
+        .oce(oce_i),
+        .reset(reset_i),
+        .ada(ada_i),
+        .din(din_i),
+        .adb(adb_i) 
+    );
 	seg seg(
 	        .clk(clkmin),
 	        .pclk(pclk),
@@ -99,9 +114,4 @@ module main(
 		.led(led)
 	);
 
-	rx rx(
-		.rxclk(rxclk),
-		.rxctl(rxctl),
-		.rxd(rxd)
-		);
 endmodule
