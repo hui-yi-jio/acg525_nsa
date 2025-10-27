@@ -5,7 +5,7 @@
 //Part Number: GW5A-LV25UG324ES
 //Device: GW5A-25
 //Device Version: A
-//Created Time: Mon Oct 27 02:45:45 2025
+//Created Time: Mon Oct 27 17:12:14 2025
 
 module gpio_pll (clkout0, clkout1, clkout2, clkout3, clkout4, clkout5, clkin);
 
@@ -62,7 +62,7 @@ defparam PLLA_inst.ODIV0_SEL = 8;
 defparam PLLA_inst.ODIV1_SEL = 8;
 defparam PLLA_inst.ODIV2_SEL = 8;
 defparam PLLA_inst.ODIV3_SEL = 8;
-defparam PLLA_inst.ODIV4_SEL = 10;
+defparam PLLA_inst.ODIV4_SEL = 32;
 defparam PLLA_inst.ODIV5_SEL = 100;
 defparam PLLA_inst.ODIV6_SEL = 8;
 defparam PLLA_inst.MDIV_SEL = 2;

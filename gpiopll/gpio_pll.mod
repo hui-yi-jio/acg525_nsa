@@ -62,7 +62,7 @@
 -de3_en false
 -en_clkout4 true
 -clkout4_bypass false
--odiv4_sel 10
+-odiv4_sel 32
 -dyn_pe4_sel false
 -clkout4_pe_coarse 0
 -clkout4_pe_fine 0

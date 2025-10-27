@@ -1,2 +1,2 @@
 %: %.sv
-	verilator -Wall --cc $<
+	verilator -Wall --lint-only $<
