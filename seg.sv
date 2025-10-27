@@ -17,13 +17,16 @@ module seg(
 );	
 	reg preb;
 	wire b = dsq[31];
-	wire ce = cntedge(preb, dsq);
-	wire c1 = $countones(dsq);
+	wire [5:0]ce = cntedge(preb, dsq);
+	wire [5:0]c1 = $countones(dsq);
 	localparam [31:0]t = 31_250_000; 
-	reg [31:0]duty, t1c, freq, fcnt, cnt,t01,t1, cnt0;
+	reg [31:0]duty, t1c, freq, fcnt, cnt,t01,t1, cnt0, dsqbuf, c1buf, cebuf;
 	always @(negedge pclk) begin
 		preb <= b;
 		if (cnt == t) begin
+			dsqbuf <= dsq;
+			c1buf <= c1;
+			cebuf <= ce;
 			cnt <= 1;
 			freq <= fcnt;
 			fcnt <= ce;
