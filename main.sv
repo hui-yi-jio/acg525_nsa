@@ -72,7 +72,7 @@ module main(
 		.clk50(clk50),
 		.din(adpin),
 		.idx(idx),
-		.dout(txin),
+		.dout(adout),
 		.addr(adad)
 		);
 	

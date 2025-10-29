@@ -18,6 +18,7 @@ function [7:0]txbyte([11:0]cnt, [7:0]frm, [3:0][7:0]crc);
 		7	:	return 'hd5;
 		[8:1047]:	return frm;
 		[1048:1051]:	return crc[cnt - 1024] ^ -1;
+		default	:	return 0;
 	endcase
 endfunction
 
