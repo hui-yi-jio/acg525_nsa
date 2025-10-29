@@ -5,7 +5,7 @@
 //Part Number: GW5A-LV25UG324ES
 //Device: GW5A-25
 //Device Version: A
-//Created Time: Tue Oct 28 01:43:53 2025
+//Created Time: Wed Oct 29 23:08:45 2025
 
 module ad2tx (dout, clka, cea, clkb, ceb, oce, reset, ada, din, adb);
 
@@ -40,7 +40,7 @@ SDPB sdpb_inst_0 (
     .ADB({adb[10:0],gw_gnd,gw_gnd,gw_gnd})
 );
 
-defparam sdpb_inst_0.READ_MODE = 1'b0;
+defparam sdpb_inst_0.READ_MODE = 1'b1;
 defparam sdpb_inst_0.BIT_WIDTH_0 = 8;
 defparam sdpb_inst_0.BIT_WIDTH_1 = 8;
 defparam sdpb_inst_0.BLK_SEL_0 = 3'b000;

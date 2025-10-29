@@ -15,5 +15,5 @@
 -depth_1 2048
 -width_0 8
 -width_1 8
--read_mode bypass
+-read_mode pipeline
 -reset_mode sync
