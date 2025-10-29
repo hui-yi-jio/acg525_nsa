@@ -59,12 +59,13 @@ module main(
     );
 	wire [7:0]adout, txin;
 	wire [10:0]adad, txad;
+	wire idx;
 	tx tx(
 	.clk125(clk125),
-	.(txafull),
-	.din(txin),
+	.idx(idx),
+	.data1(txin),
 	.txctl(txctl),
-	.rden(txrden),
+	.txad(txad),
 	.txd(txd)
 	);
 	adc adc(
