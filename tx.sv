@@ -6,44 +6,60 @@ function automatic [31:0]crc32([31:0]crc,[7:0]data);
 	end
 	return crc;
 endfunction;
-function [31:0]crcnext([31:0]crc, [7:0]cnt, [7:0]data);
-	case (cnt) inside
-		[0:7]: return -1;
-		[8:221]: return crc32(crc, data);
-		default return crc;
+function [31:0]crcupd([11:0]cnt, [31:0]crc, [7:0]frm);
+	case(cnt) inside
+		[0:7]	:	return -1;
+		[8:1047]:	return crc32(crc, frm);
+	endcase
+endfunction
+function [7:0]txbyte([11:0]cnt, [7:0]frm, [3:0][7:0]crc);
+	case(cnt) inside
+		[0:6]	:	return 'h55;
+		7	:	return 'hd5;
+		[8:1047]:	return frm;
+		[1048:1051]:	return crc[cnt - 1024] ^ -1;
 	endcase
 endfunction
 
-localparam [13:0][7:0]head = 'h1919_08bf_b8da_8800_0088_dab8_bf08;
+localparam [5:0][7:0]mac = 48'h88_dab8_bf08;
 module tx(
-	input clk125, full,
-	input [39:0]idata,
+	input clk125, idx,
+	input [7:0]data1,
 	output reg txctl,
-	output wire rden,
-
-	output wire[3:0]txd
+	output [10:0]txad,
+	output [3:0]txd
 );
-	reg [7:0] txcnt0, txcnt1;
-	reg [3:0][7:0] crc;
-	function [7:0]sel([7:0]cnt);
+	reg [1:0][7:0] seq;
+	function [7:0]frame([11:0]cnt, [7:0]data);
 		case(cnt) inside
-			[0:6]	:	return 'h55;
-			7	:	return 'hd5;
-			[8:21]	:	return head[cnt - 8];
-			[22:221]:	return 'h39;
-			[222:225]:	return crc[cnt - 222] ^ -1;
-			default	:	return 0;
-		endcase 
+			[8:13]	:	return mac[cnt - 8];
+			[14:19]	:	return 'h66;
+			20, 21	:	return 'h19;
+			22, 23	:	return seq[cnt - 22];
+			[24:1047]:	return data;
+		endcase
 	endfunction
-	reg [7:0]txreg0, txreg1;
 
-	always_ff @(posedge clk125) begin 
-		txcnt1 <= txcnt1 + 1;	//0
-		txcnt0 <= txcnt1;	//1
-		txctl <= txcnt0 < 226;	//2
-		txreg1 <= sel(txcnt1);	//1
-		txreg0 <= sel(txcnt0);	//2
-		crc <= crcnext(crc, txcnt0, txreg1);	//2
+	reg idx0;
+	reg [11:0] cnt0, cnt1, cnt2;
+	reg [3:0][7:0] crc2;
+	reg [7:0]frm2;
+	wire [9:0]ad = 10'(cnt0 - 24);
+	wire ie = idx ^ idx0;
+	always_ff @(negedge clk125) begin
+		idx0 <= idx;
+		cnt0 <= ie ? 0 : cnt0 + 1;
+		seq <= seq + ie * 1;
+		txad <= {idx, ad};
+		cnt1 <= cnt0;
+		cnt2 <= cnt1;
+		frm2 <= frame(cnt1, data1);
+		crc2 <= crcupd(cnt2, crc2, frm2);
 	end
-	assign txd = clk125 ? txreg0[3:0] : txreg0[7:4]; //2
+	reg [7:0] databuf;
+	always_ff @(posedge clk125) begin 
+		databuf <= txbyte(cnt2, frm2, crc2);
+		txctl <= cnt2 < 1052;
+	end
+	assign txd = clk125 ? databuf[3:0] : databuf[7:4];
 endmodule

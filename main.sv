@@ -59,19 +59,21 @@ module main(
     );
 	wire [7:0]adout, txin;
 	wire [10:0]adad, txad;
+	wire idx;
 	tx tx(
 	.clk125(clk125),
-	.(txafull),
-	.din(txin),
+	.idx(idx),
+	.data1(txin),
 	.txctl(txctl),
-	.rden(txrden),
+	.txad(txad),
 	.txd(txd)
 	);
 	adc adc(
 		.clk50(clk50),
-		.idata(adpin),
-		.odata(addata),
-		.wren(adwren)
+		.din(adpin),
+		.idx(idx),
+		.dout(txin),
+		.addr(adad)
 		);
 	
     ad2tx ad2tx(
@@ -86,22 +88,33 @@ module main(
         .din(adout),
         .adb(txad)
     );
+    wire [7:0]dain, rxout;
+    wire [13:0]cycle, daad, rxad;
 	rx rx(
 		.rxclk(rxclk),
 		.rxctl(rxctl),
-		.rxd(rxd)
+		.rxd(rxd),
+		.dout(rxout),
+		.addr(rxad),
+		.cycle(cycle)
 		);
+	dac dac(
+		.clk125(clk125),
+		.din(dain),
+		.cycle(cycle),
+		.dout(dapin),
+		.addr(daad));
     rx2da rx2da(
-        .dout(dout_o),
-        .clka(clka_i), 
-        .cea(cea_i),
-        .clkb(clkb_i),
-        .ceb(ceb_i), 
-        .oce(oce_i),
-        .reset(reset_i),
-        .ada(ada_i),
-        .din(din_i),
-        .adb(adb_i) 
+        .dout(dain),
+        .clka(rxclk), 
+        .cea(1),
+        .clkb(clk125),
+        .ceb(1), 
+        .oce(1),
+        .reset(0),
+        .ada(rxad),
+        .din(rxout),
+        .adb(daad) 
     );
 	seg seg(
 	        .clk(clkmin),
