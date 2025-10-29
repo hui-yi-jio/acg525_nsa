@@ -26,7 +26,7 @@ module tx(
 	input clk125, idx,
 	input [7:0]data1,
 	output reg txctl,
-	output [10:0]txad,
+	output reg [10:0]txad,
 	output [3:0]txd
 );
 	reg [1:0][7:0] seq;

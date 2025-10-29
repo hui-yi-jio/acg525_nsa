@@ -2,7 +2,7 @@ module rx(
 	input rxclk, rxctl,
 	input [3:0]rxd,
 	output reg[7:0]dout,
-	output [13:0]addr, cycle
+	output reg[13:0]addr, cycle
 );
 	
 	reg [13:0]cnt;
