@@ -26,8 +26,8 @@ module tx(
 	input clk125, idx,
 	input [7:0]data1,
 	output reg txctl,
-	output reg [10:0]txad,
-	output wire[3:0]txd
+	output [10:0]txad,
+	output [3:0]txd
 );
 	reg [1:0][7:0] seq;
 	function [7:0]frame([11:0]cnt, [7:0]data);
