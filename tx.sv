@@ -8,9 +8,10 @@ function automatic [31:0]crc32([31:0]crc,[7:0]data);
 endfunction;
 function [31:0]crcupd([10:0]cnt, [31:0]crc, [7:0]frm);
 	case(cnt) inside
+		[0:7]	:	return -1;
 		[8:1047]:	return crc32(crc, frm);
 		//1048	:	return crc ^ -1;
-		default	:	return -1;
+		default	:	return crc;
 	endcase
 endfunction
 function [7:0]txbyte([10:0]cnt, [7:0]frm, [7:0]crc);
