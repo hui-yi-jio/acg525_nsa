@@ -7,7 +7,7 @@ function automatic [31:0]crc32([31:0]crc, [7:0]data);
 	end
 	return crc;
 endfunction;
-function automatic[31:0]crcupd([10:0]cnt, [31:0]crc, [7:0]frm);
+function [31:0]crcupd([10:0]cnt, [31:0]crc, [7:0]frm);
 	case(cnt) inside
 		[0:7]	:	return -1;
 		[8:1047]:	return crc32(crc, frm);
@@ -22,8 +22,8 @@ function automatic[7:0]txbyte([10:0]cnt, [7:0]frm, [7:0]crc);
 		[1048:1051]:	return crc;
 	endcase
 endfunction
-localparam [5:0][7:0]mac = 48'h88_dab8_bf08;
 function automatic[7:0]frame([10:0]cnt, [7:0]data, [1:0][7:0]seq);
+	bit [5:0][7:0]mac = 48'h88_dab8_bf08;
 	case(cnt) inside
 		[8:13]	:	return mac[cnt - 8];
 		[14:19]	:	return 'h66;
