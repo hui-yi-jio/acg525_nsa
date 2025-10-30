@@ -81,8 +81,8 @@ module seg(
 	always @(negedge clk) begin 
 		k0 <= key0;
 		k1 <= key1;
-		k0cnt <= k0cnt + 2'(!k0 ^ key0);
-		k1cnt <= k1cnt + 2'(!k1 ^ key1);
+		k0cnt <= k0cnt + 2'(!k0 & key0);
+		k1cnt <= k1cnt + 2'(!k1 & key1);
 		segstat0 <= segstat1;
 		ds <= segbuf[segstat1[3:0]];
 	end
