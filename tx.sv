@@ -41,27 +41,32 @@ module tx(
 );
 	reg [1:0][7:0] seq;
 
-	reg idx0, ie;
+	reg idx0, idx1, ie;
 	reg [10:0] cnt0, cnt1, cnt2, cnt3;
 	reg [3:0][7:0] crc;
 	reg [7:0]data2, frm2, frm3;
 	wire [9:0]ad = 10'(cnt0 - 24);
 	always_ff @(negedge clk125) begin
-		ie = idx ^ idx0;
+		ie = idx1 ^ idx0;
 		idx0 <= idx;
+		idx1 <= idx0;
 		cnt0 <= ie ? 0 : txctl ? cnt0 + 1 : cnt0;
 		seq <= seq + ie * 1;
-		txad <= {idx, ad};
+		txad <= {idx0, ad};
 
 		cnt1 <= cnt0;
 		cnt2 <= cnt1;
 		frm2 <= frame(cnt1, data1,seq);
 		crc <= crcupd(cnt2, crc, frm2);
+
+		cnt3 <= cnt2;
+		data2 <= data1;
+		frm3 <= frame(cnt2, data2, seq);
 	end
 	reg [7:0] databuf;
 	always_ff @(posedge clk125) begin 
-		databuf <= txbyte(cnt2, frm2, crc);
-		txctl <= cnt2 < 1052;
+		databuf <= txbyte(cnt3, frm3, crc);
+		txctl <= cnt3 < 1052;
 	end
 	assign txd = clk125 ? databuf[3:0] : databuf[7:4];
 endmodule
