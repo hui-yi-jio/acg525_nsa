@@ -1,5 +1,5 @@
 function automatic [31:0]crc32([31:0]crc,[7:0]data);
-	for (int i = 0; i < 8; ++i) begin
+	foreach(data[i]) begin
 		bit b = crc[0] ^ data[i];
 		crc >>= 1;
 		crc ^= b ? 'hedb88320 : 0;
