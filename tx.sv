@@ -63,12 +63,12 @@ module tx(
 		data2 <= data1;
 		data3 <= data2;
 
-		cnt4 <= cnt3;
-		crc4 <= crc[cnt3[1:0]];
 		frm4 <= frame(cnt3, data3, seq);
 	end
 	reg [7:0] databuf;
 	always_ff @(posedge clk125) begin 
+		cnt4 <= cnt3;
+		crc4 <= crc[cnt3[1:0]];
 		databuf <= txbyte(cnt4, frm4, crc4);
 		txctl <= cnt4 < 1052;
 	end
