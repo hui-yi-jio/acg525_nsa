@@ -1,4 +1,5 @@
-function automatic [31:0]crc32([31:0]crc,[7:0]data);
+`include "def.sv"
+function automatic u32 crc32(u32 crc, u8 data);
 	foreach(data[i]) begin
 		bit b = crc[0] ^ data[i];
 		crc >>= 1;
@@ -6,14 +7,14 @@ function automatic [31:0]crc32([31:0]crc,[7:0]data);
 	end
 	return crc;
 endfunction;
-function [31:0]crcupd([10:0]cnt, [31:0]crc, [7:0]frm);
+function automatic[31:0]crcupd([10:0]cnt, [31:0]crc, [7:0]frm);
 	case(cnt) inside
 		[0:7]	:	return -1;
 		[8:1047]:	return crc32(crc, frm);
 		1048	:	return crc ^ -1;
 	endcase
 endfunction
-function [7:0]txbyte([10:0]cnt, [7:0]frm, [7:0]crc);
+function automatic[7:0]txbyte([10:0]cnt, [7:0]frm, [7:0]crc);
 	case(cnt) inside
 		[0:6]	:	return 'h55;
 		7	:	return 'hd5;
@@ -22,7 +23,7 @@ function [7:0]txbyte([10:0]cnt, [7:0]frm, [7:0]crc);
 	endcase
 endfunction
 localparam [5:0][7:0]mac = 48'h88_dab8_bf08;
-function [7:0]frame([10:0]cnt, [7:0]data, [1:0][7:0]seq);
+function automatic[7:0]frame([10:0]cnt, [7:0]data, [1:0][7:0]seq);
 	case(cnt) inside
 		[8:13]	:	return mac[cnt - 8];
 		[14:19]	:	return 'h66;

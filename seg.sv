@@ -1,4 +1,4 @@
-typedef int unsigned u32;
+`include "def.sv"
 localparam [7:0]segt[0:15] = {
 	8'h03,8'h9f,8'h25,8'h0d,
 	8'h99,8'h49,8'h41,8'h1f,
