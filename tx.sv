@@ -10,16 +10,15 @@ function [31:0]crcupd([10:0]cnt, [31:0]crc, [7:0]frm);
 	case(cnt) inside
 		[0:7]	:	return -1;
 		[8:1047]:	return crc32(crc, frm);
-		//1048	:	return crc ^ -1;
-		default	:	return crc;
+		1048	:	return crc ^ -1;
 	endcase
 endfunction
 function [7:0]txbyte([10:0]cnt, [7:0]frm, [7:0]crc);
 	case(cnt) inside
+		[0:6]	:	return 'h55;
 		7	:	return 'hd5;
 		[8:1047]:	return frm;
 		[1048:1051]:	return crc;
-		default	:	return 'h55;
 	endcase
 endfunction
 localparam [5:0][7:0]mac = 48'h88_dab8_bf08;
@@ -30,7 +29,6 @@ function [7:0]frame([10:0]cnt, [7:0]data, [1:0][7:0]seq);
 		20, 21	:	return 'h19;
 		22, 23	:	return seq[cnt - 22];
 		[24:1047]:	return data;
-		default	:	return 0;
 	endcase
 endfunction
 
@@ -61,7 +59,7 @@ module tx(
 		frm2 <= frame(cnt1, data1,seq);
 		crc <= crcupd(cnt2, crc, frm2);
 
-		crc3 <= crc[cnt2[1:0]] ^ -1;
+		crc3 <= crc[cnt2[1:0]];
 		cnt3 <= cnt2;
 		data2 <= data1;
 		frm3 <= frame(cnt2, data2, seq);
