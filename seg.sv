@@ -65,10 +65,9 @@ module seg(
 		end
 	end
 
+	reg k0, k1;
 	reg [1:0]k0cnt, k1cnt;
 	assign led[1:0] = k0cnt;
-	always @(negedge key0) k0cnt <= k0cnt + 1;
-	always @(negedge key1) k1cnt <= k1cnt + 1;
 
 	wire [3:0][7:0][3:0]cntbuf = {t0,t1,duty,freq};
 	wire [7:0][3:0]disbuf = cntbuf[k0cnt];
@@ -80,6 +79,10 @@ module seg(
 	wire [7:0]segdata = segt[disbuf[segidx]];
 	wire [15:0]segbuf = {segbit, segdata};
 	always @(negedge clk) begin 
+		k0 <= key0;
+		k1 <= key1;
+		k0cnt <= k0cnt + 2'(!k0 ^ key0);
+		k1cnt <= k1cnt + 2'(!k1 ^ key1);
 		segstat0 <= segstat1;
 		ds <= segbuf[segstat1[3:0]];
 	end
