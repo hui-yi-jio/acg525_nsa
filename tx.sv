@@ -23,8 +23,7 @@ function automatic[7:0]txbyte([10:0]cnt, [7:0]frm, [7:0]crc);
 	endcase
 endfunction
 function automatic[7:0]frame([10:0]cnt, [7:0]data, [1:0][7:0]seq);
-	bit [5:0][7:0]mac = 48'h88_dab8_bf08;
-	case(cnt) inside
+	bit [5:0][7:0]mac = 48'h5965239093d4; case(cnt) inside
 		[8:13]	:	return mac[cnt - 8];
 		[14:19]	:	return 'h66;
 		20, 21	:	return 'h19;
