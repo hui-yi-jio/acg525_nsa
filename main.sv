@@ -89,7 +89,7 @@ module main(
         .adb(txad)
     );
     wire [7:0]dain, rxout, div0;
-    wire [12:0]cycle, daad, rxad;
+    wire [13:0]cycle, daad, rxad;
 	rx rx(
 		.div(div0),
 		.rxclk(rxclk),
