@@ -64,11 +64,15 @@ module seg(
 				if (preb) t0 <= 1 * cmz;
 				else t1 <= 1 * cmo;
 		end
-		if (cnt < 28) begin
-
+		if (cnt == 1) begin
+			d10 <= 0;
+			f10 <= 0;
+		end else if (cnt < 30) begin
+			{d10, duty} <= bin2dec({d10, duty});
+			{f10, freq} <= bin2dec({f10, freq});
 		end
 		if (cnt == 3125000) begin
-			freq <= fcnt;
+			freq <= fcnt >> 1;
 			duty <= t1c;
 
 			cnt <= 1;
@@ -86,7 +90,7 @@ module seg(
 	reg [1:0]k0cnt, k1cnt;
 	assign led[1:0] = k0cnt;
 
-	wire [3:0][7:0][3:0]cntbuf = {32'(t0),32'(t1),32'(duty),32'(freq)};
+	wire [3:0][7:0][3:0]cntbuf = {32'(t0),32'(t1),32'(d10),32'(f10)};
 	wire [7:0][3:0]disbuf = cntbuf[k0cnt];
 
 	reg [6:0]segstat0;
