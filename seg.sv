@@ -5,28 +5,35 @@ localparam [7:0]segt[0:15] = {
 	8'h01,8'h09,8'h11,8'hc1,
 	8'h63,8'h85,8'h61,8'h71
 };
-function automatic u32 cntedge(b, u32 x);
+function automatic u6 cntedge(b, u32 x);
 	u32 y = {x[30:0], b};
-	return $countones(x ^ y);
+	u32 z = x ^ y;
+	return $countones(z);
 endfunction
-function automatic u32 ctz(u32 x);
-	u32 j = 0;
+function automatic u6 ctz(u32 x);
+	u6 j = 0;
 	foreach(x[i]) j += 1 * (x << i == 0);
 	return j;
 endfunction
-function u32 cto(u32 x);
+function automatic u6 cto(u32 x);
 	return ctz(~x);
 endfunction
-function automatic u32 clz(u32 x);
-	u32 j = 0;
+function automatic u6 clz(u32 x);
+	u6 j = 0;
 	foreach(x[i]) j += 1 * (x >> i == 0);
 	return j;
 endfunction
-function u32 clo(u32 x);
+function automatic u6 clo(u32 x);
 	return clz(~x);
 endfunction
-function u32 avg(u32 x0, u32 x1);
-	return (x0 * 255 + x1 + 256) >> 8;
+function [27:0]avg(u28 x0, u28 x1);
+	return x0 * 255 + x1 + 255 >> 8;
+endfunction
+function [59:0]bin2dec([14:0][3:0]x);
+	for (int i = 0; i < 8; ++i)
+		if (x[i + 7] > 4)
+			x[i + 7] += 3;
+	return x << 1;
 endfunction
 
 module seg(
@@ -34,42 +41,50 @@ module seg(
 	output reg ds, stclk, [1:0]led
 );	
 	reg preb;
-	reg [31:0]dsq, duty, t1c, freq, fcnt, cnt,t0,t1, prec;
+	reg [31:0]dsq;
+	reg [27:0]duty, t1c, freq, fcnt;
+	reg [19:0]t0,t1, prec;
+	reg [14:0]cnt;
 	wire b = dsq[31];
-	wire [31:0]ce = cntedge(preb, dsq);
-	wire [31:0]c1 = $countones(dsq);
-	wire [31:0]cmz = ctz(dsq >> cto(dsq));
-	wire [31:0]cmo = cto(dsq >> ctz(dsq));
+	wire u6 ce = cntedge(preb, dsq);
+	wire u6 c1 = $countones(dsq);
+	wire u6 ct1 = cto(dsq);
+	wire u6 ct0 = ctz(dsq);
+	wire u6 cmz = ctz(dsq >> ct1);
+	wire u6 cmo = cto(dsq >> ct0);
 	always @(negedge pclk) begin
 		dsq <= dsq0;
 		preb <= b;
 		if (ce == 0) prec <= prec + 32;
 		else begin
-			prec <= b ? clo(dsq) : clz(dsq);
-			if (preb) t1 <= prec + cto(dsq);
-			else t0 <= prec + ctz(dsq);
+			prec <= 20'(b ? clo(dsq) : clz(dsq));
+			if (preb) t1 <= prec + 1 * ct1;
+			else t0 <= prec + 1 * ct0;
 			if (ce > 1) 
-				if (preb) t0 <= cmz;
-				else t1 <= cmo;
+				if (preb) t0 <= 1 * cmz;
+				else t1 <= 1 * cmo;
+		end
+		if (cnt < 28) begin
 		end
 		if (cnt == 31250) begin
 			cnt <= 1;
 			freq <= avg(freq, fcnt);
-			fcnt <= ce;
+			fcnt <= ce * 1;
 			duty <= avg(duty, t1c);
-			t1c <= c1;
+			t1c <= c1 * 1;
 		end else begin
 			cnt <= cnt + 1;
-			fcnt <= fcnt + ce;
-			t1c <= t1c + c1;
+			fcnt <= fcnt + ce * 1;
+			t1c <= t1c + c1 * 1;
 		end
+
 	end
 
 	reg k0, k1;
 	reg [1:0]k0cnt, k1cnt;
 	assign led[1:0] = k0cnt;
 
-	wire [3:0][7:0][3:0]cntbuf = {t0,t1,duty,freq};
+	wire [3:0][7:0][3:0]cntbuf = {32'(t0),32'(t1),32'(duty),32'(freq)};
 	wire [7:0][3:0]disbuf = cntbuf[k0cnt];
 
 	reg [6:0]segstat0;
