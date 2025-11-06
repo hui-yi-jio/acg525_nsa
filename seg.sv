@@ -41,10 +41,10 @@ module seg(
 	output reg ds, stclk, [1:0]led
 );	
 	reg preb;
-	reg [31:0]dsq;
+	reg [31:0]dsq, d10, f10;
 	reg [27:0]duty, t1c, freq, fcnt;
-	reg [19:0]t0,t1, prec;
-	reg [14:0]cnt;
+	reg [27:0]t0,t1, prec;
+	reg [21:0]cnt;
 	wire b = dsq[31];
 	wire u6 ce = cntedge(preb, dsq);
 	wire u6 c1 = $countones(dsq);
@@ -57,7 +57,7 @@ module seg(
 		preb <= b;
 		if (ce == 0) prec <= prec + 32;
 		else begin
-			prec <= 20'(b ? clo(dsq) : clz(dsq));
+			prec <= 28'(b ? clo(dsq) : clz(dsq));
 			if (preb) t1 <= prec + 1 * ct1;
 			else t0 <= prec + 1 * ct0;
 			if (ce > 1) 
@@ -67,9 +67,9 @@ module seg(
 		if (cnt < 28) begin
 
 		end
-		if (cnt == 31250) begin
-			freq <= avg(freq, fcnt);
-			duty <= avg(duty, t1c);
+		if (cnt == 3125000) begin
+			freq <= fcnt;
+			duty <= t1c;
 
 			cnt <= 1;
 			fcnt <= ce * 1;

@@ -27,13 +27,13 @@ module main(
         .clkout3(fclkqn),
         .clkout4(pclk),  
         .clkout5(po),
-        .clkin(digsig)   
+        .clkin(clk50)   
     );
 	wire [31:0]dsq;
     Gowin_Oversample oversam(
         .q(dsq), 
         .fclkp(fclkp), 
-        .d(clk50), 
+        .d(digsig), 
         .fclkn(fclkqp), 
         .fclkqp(fclkn), 
         .fclkqn(fclkqn), 
