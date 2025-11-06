@@ -63,7 +63,7 @@ module main(
 	tx tx(
 	.clk125(clk125),
 	.idx(idx),
-	.data1(txin),
+	.data2(txin),
 	.txctl(txctl),
 	.txad(txad),
 	.txd(txd)

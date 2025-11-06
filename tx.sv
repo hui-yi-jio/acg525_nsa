@@ -34,7 +34,7 @@ endfunction
 
 module tx(
 	input clk125, idx,
-	input [7:0]data1,
+	input [7:0]data2,
 	output reg txctl,
 	output reg [10:0]txad,
 	output [3:0]txd
@@ -44,7 +44,7 @@ module tx(
 	reg idx0, idx1, ie;
 	reg [10:0] cnt0, cnt1, cnt2, cnt3, cnt4;
 	reg [3:0][7:0] crc;
-	reg [7:0]data2, data3, frm2, frm4, crc4;
+	reg [7:0]data3, frm3, frm4, crc4;
 	wire [9:0]ad = 10'(cnt0 - 24);
 	always_ff @(negedge clk125) begin
 		ie <= idx1 ^ idx0;
@@ -56,13 +56,11 @@ module tx(
 
 		cnt1 <= cnt0;
 		cnt2 <= cnt1;
-		frm2 <= frame(cnt1, data1,seq);
-		crc <= crcupd(cnt2, crc, frm2);
-
 		cnt3 <= cnt2;
-		data2 <= data1;
-		data3 <= data2;
+		frm3 <= frame(cnt2, data2,seq);
+		crc <= crcupd(cnt3, crc, frm3);
 
+		data3 <= data2;
 		frm4 <= frame(cnt3, data3, seq);
 	end
 	reg [7:0] databuf;
