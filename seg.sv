@@ -27,7 +27,7 @@ function automatic u6 clo(u32 x);
 	return clz(~x);
 endfunction
 function [27:0]avg(u28 x0, u28 x1);
-	return x0 * 255 + x1 + 255 >> 8;
+	return x0 * 255 + 256 + x1 >> 8;
 endfunction
 function [59:0]bin2dec([14:0][3:0]x);
 	for (int i = 0; i < 8; ++i)
@@ -65,12 +65,14 @@ module seg(
 				else t1 <= 1 * cmo;
 		end
 		if (cnt < 28) begin
+
 		end
 		if (cnt == 31250) begin
-			cnt <= 1;
 			freq <= avg(freq, fcnt);
-			fcnt <= ce * 1;
 			duty <= avg(duty, t1c);
+
+			cnt <= 1;
+			fcnt <= ce * 1;
 			t1c <= c1 * 1;
 		end else begin
 			cnt <= cnt + 1;
