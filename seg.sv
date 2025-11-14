@@ -41,9 +41,9 @@ module seg(
 	output reg ds, stclk, [1:0]led
 );	
 	reg preb;
-	reg [31:0]dsq, d10, f10;
+	reg [31:0]dsq, d10, f10, t110, t010;
 	reg [27:0]duty, t1c, freq, fcnt;
-	reg [27:0]t0,t1, prec;
+	reg [27:0]t0,t1,t0buf, t1buf, prec;
 	reg [21:0]cnt;
 	wire b = dsq[31];
 	wire u6 ce = cntedge(preb, dsq);
@@ -67,13 +67,20 @@ module seg(
 		if (cnt == 1) begin
 			d10 <= 0;
 			f10 <= 0;
+			t010 <= 0;
+			t110 <= 0;
 		end else if (cnt < 30) begin
 			{d10, duty} <= bin2dec({d10, duty});
 			{f10, freq} <= bin2dec({f10, freq});
+			{t010, t0buf} <= bin2dec({t010, t0buf});
+			{t110, t1buf} <= bin2dec({t110, t1buf});
 		end
 		if (cnt == 3125000) begin
 			freq <= fcnt >> 1;
 			duty <= t1c;
+
+			t0buf <= t0;
+			t1buf <= t1;
 
 			cnt <= 1;
 			fcnt <= ce * 1;
@@ -90,7 +97,7 @@ module seg(
 	reg [1:0]k0cnt, k1cnt;
 	assign led[1:0] = k0cnt;
 
-	wire [3:0][7:0][3:0]cntbuf = {32'(t0),32'(t1),32'(d10),32'(f10)};
+	wire [3:0][7:0][3:0]cntbuf = {32'(t010),32'(t110),32'(d10),32'(f10)};
 	wire [7:0][3:0]disbuf = cntbuf[k0cnt];
 
 	reg [6:0]segstat0;
